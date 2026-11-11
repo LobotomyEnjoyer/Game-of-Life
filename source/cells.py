@@ -19,8 +19,8 @@ import time
 
 # ==== НАЧАЛЬНЫЕ ПАРАМЕТРЫ ====
 SQUARE_SIDE = 30
-W = 40*SQUARE_SIDE
-H = 40*SQUARE_SIDE
+W = 10*SQUARE_SIDE + 2*SQUARE_SIDE # [W]idth or [H]eight = (amount of cells inside of red area in [W]idth/[H]eight) * SQUARE_SIDE + (magic value) 
+H = 10*SQUARE_SIDE + 2*SQUARE_SIDE
 
 ROWS = H//SQUARE_SIDE
 COLS = W//SQUARE_SIDE
@@ -51,10 +51,11 @@ def update_field(field_before: list, field_after: list):
 
 def draw_grid():
     """Draws a grid and a boundary over field."""
-    for i in range(0, H//SQUARE_SIDE):
+    # Draws horizontal lines
+    for i in range(2, H//SQUARE_SIDE - 1):
         pg.draw.line(screen, GREY, (SQUARE_SIDE, i*SQUARE_SIDE), (W-SQUARE_SIDE, i*SQUARE_SIDE))
-
-    for i in range(0, W//SQUARE_SIDE):
+    # Draws vertical lines
+    for i in range(2, W//SQUARE_SIDE - 1):
         pg.draw.line(screen, GREY, (i*SQUARE_SIDE, SQUARE_SIDE), (i*SQUARE_SIDE, H-SQUARE_SIDE))
     
     # red lines
