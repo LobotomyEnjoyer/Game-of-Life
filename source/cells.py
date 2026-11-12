@@ -19,8 +19,8 @@ import time
 
 # ==== НАЧАЛЬНЫЕ ПАРАМЕТРЫ ====
 SQUARE_SIDE = 30
-W = 10*SQUARE_SIDE + 2*SQUARE_SIDE # [W]idth or [H]eight = (amount of cells inside of red area in [W]idth/[H]eight) * SQUARE_SIDE + (magic value) 
-H = 10*SQUARE_SIDE + 2*SQUARE_SIDE
+W = 20*SQUARE_SIDE + 2*SQUARE_SIDE # [W]idth or [H]eight = (amount of cells inside of red area in [W]idth/[H]eight) * SQUARE_SIDE + (magic value) 
+H = 20*SQUARE_SIDE + 2*SQUARE_SIDE
 
 ROWS = H//SQUARE_SIDE
 COLS = W//SQUARE_SIDE
@@ -39,15 +39,21 @@ def update_field(field_before: list, field_after: list):
     counter = 0
     for row in range(1, ROWS):
         for col in range(1, COLS):
-            if row >= 1 and col >= 1:
-                if field_before[row-1][col]: counter += 1
-                if field_before[row+1][col]: counter += 1
-                if field_before[row][col-1]: counter += 1
-                if field_before[row][col+1]: counter += 1
-                if field_before[row-1][col-1]: counter += 1
-                if field_before[row-1][col+1]: counter += 1
-                if field_before[row+1][col-1]: counter += 1
-                if field_before[row+1][col+1]: counter += 1
+            if field_before[row-1][col]: counter += 1
+            if field_before[row+1][col]: counter += 1
+            if field_before[row][col-1]: counter += 1
+            if field_before[row][col+1]: counter += 1
+            if field_before[row-1][col-1]: counter += 1
+            if field_before[row-1][col+1]: counter += 1
+            if field_before[row+1][col-1]: counter += 1
+            if field_before[row+1][col+1]: counter += 1
+
+            if field_before[row][col]:
+                if counter < 2: field_after[row][col] = 0
+                elif counter > 3: field_after[row][col] = 0
+            else:
+                if counter == 3: field_after[row][col] = 1
+            
 
 def draw_grid():
     """Draws a grid and a boundary over field."""
@@ -74,6 +80,8 @@ def matrix_visualizer(matrix: list):
 
 def put_cell(pos: tuple, matrix: list):
     """Puts a cell on the screen upon mouse click."""
+    if matrix[pos[1]//SQUARE_SIDE][pos[0]//SQUARE_SIDE] == 0: matrix[pos[1]//SQUARE_SIDE][pos[0]//SQUARE_SIDE] = 1
+    else: matrix[pos[1]//SQUARE_SIDE][pos[0]//SQUARE_SIDE] = 0
 
 
 pg.init()
@@ -93,16 +101,22 @@ while True:
             pg.quit()
             sys.exit()
         elif event.type == pg.MOUSEBUTTONDOWN:
-            print(type(event.pos))
+            # (x,y) = (col, row)
+            put_cell(event.pos, field_before)
+            matrix_visualizer(field_before)
         elif event.type == pg.K_SPACE:
             pause = False if pause else True
 
- # pause handler
-    
-    screen.fill(BLACK)
-    # pg.draw.rect(screen, BLUE, rect)
-    matrix_visualizer(field_before)
-    draw_grid()
-    pg.display.flip()
-    
+    if pause:
+        screen.fill(BLACK)
+        matrix_visualizer(field_before)
+        draw_grid()
+        pg.display.flip()
+    else:
+        update_field(field_before, field_after)
+        screen.fill(BLACK)
+        matrix_visualizer(field_after)
+        draw_grid()
+        pg.display.flip()
+
     time.sleep(0.2)
