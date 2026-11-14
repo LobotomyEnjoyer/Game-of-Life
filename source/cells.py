@@ -10,11 +10,17 @@ import copy
 # + Реализовать паузу
 # - Реализовать разную скорость симуляции
 # + Реализовать очистку поля
-# - Реализовать по-кадровую симуляцию по кнопке во время паузы
+# + Реализовать по-кадровую симуляцию по кнопке во время паузы
 # - Перевести комменты на английский по завершению
 # - Добавить элементы GUI:
 #   - Пауза
 #   - Скорость симуляции
+
+# ==== CONTROLS ====
+# [E] - makes next step when paused
+# [R] - clears the field
+# [SPACE] - pause/unpause
+# [Left Click] - place/remove cell when paused
 
 
 # ==== ПРАВИЛА ====
@@ -125,6 +131,14 @@ while True:
             # field cleaner  
             elif event.key == pg.K_r:
                 field_current = copy.deepcopy(field_clear)
+            # makes next simulation step when paused
+            elif event.key == pg.K_e and pause:
+                update_field(field_current, field_buffer)
+                field_current = copy.deepcopy(field_buffer)
+                field_buffer = copy.deepcopy(field_clear)
+                matrix_visualizer(field_current)
+                draw_grid()
+                pg.display.flip()
 
     if pause:
         screen.fill(BLACK)
