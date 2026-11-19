@@ -122,7 +122,6 @@ field_current = [[0 for _ in range(COLS+1)] for _ in range(ROWS+1)]
 field_buffer = [[0 for _ in range(COLS+1)] for _ in range(ROWS+1)]
 
 pause = True
-GUI_pause(pause)
 
 while True:
     for event in pg.event.get():
