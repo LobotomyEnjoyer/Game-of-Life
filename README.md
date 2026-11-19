@@ -23,6 +23,6 @@ Pygame library.
 
 ## P.S.
 
-Unfortunately, this was just my weak attempt in GoL and I wasn't aiming for infinite or cyclic field. It is what it is.
+Unfortunately, this was just my weak attempt in GoL, and I wasn't aiming for an infinite or cyclic field. It is what it is.
 
-Also, the code is kinda meh and I ain't re-factoring it.
+Also, the code is kinda meh, and I ain't re-factoring it.
