@@ -18,10 +18,10 @@ The program has:
 
 [Q] - change simulation speed;
 
-# Requirements
+## Requirements
 Pygame library.
 
-# P.S.
+## P.S.
 
 Unfortunately, this was just my weak attempt in GoL and I wasn't aiming for infinite or cyclic field. It is what it is.
 
