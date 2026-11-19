@@ -3,35 +3,25 @@ import sys
 import time
 import copy
 
-# TODO:
-# + Реализовать правила для клеток
-# + Реализовать игровое поле и его обновление
-# + Реализовать размещение клеток курсором (перед симуляцией поле пустое!)
-# + Реализовать паузу
-# - Реализовать разную скорость симуляции
-# + Реализовать очистку поля
-# + Реализовать по-кадровую симуляцию по кнопке во время паузы
-# - Перевести комменты на английский по завершению
-# - Добавить элементы GUI:
-#   + Пауза
-#   - Скорость симуляции
-
 # ==== CONTROLS ====
-# [E] - makes next step when paused
-# [R] - clears the field
-# [SPACE] - pause/unpause
-# [Left Click] - place/remove cell when paused
+# [E] - makes next step when paused;
+# [R] - clears the field;
+# [SPACE] - pause/unpause;
+# [Left Click] - place/remove cell when paused;
+# [Q] - change simulation speed;
 
 
-# ==== ПРАВИЛА ====
-# клетка "смотрит" на 8 соседей рядом с собой
-# 1) у живой меньше 2 живых соседей - смерть
-# 2) у живой 2-3 живых соседа - ничего
-# 3) у живой больше 3 живых соседей - смерть
-# 4) у мертвой ровно 3 живых соседа - жизнь
+# ==== RULES ====
+# Each cell looks at it's 8 neighbors
+# 1) if a living cell has less than 2 alive cells - death
+# 2) if a living cell has 2-3 alive cells - nothing changes
+# 3) if a living cell has more than 3 alive cells - death
+# 4) if a dead cell has exactly 3 alive cells - life
 
 
-# ==== НАЧАЛЬНЫЕ ПАРАМЕТРЫ ====
+# ==== PARAMETERS ====
+pg.init()
+
 SQUARE_SIDE = 30
 # [W]idth or [H]eight = (amount of cells inside of red area in [W]idth/[H]eight) * SQUARE_SIDE + (border compensation)
 W = 30*SQUARE_SIDE + 2*SQUARE_SIDE 
@@ -48,10 +38,11 @@ GREEN = (0, 255, 0)
 BLACK = (0,0,0)
 WHITE = (255,255,255)
 
-enumerate()
+SPEED_MODIFIER = 1000
 
-# ==== ФУНКЦИИ ====
+SPEED_TEXT = f"Speed: x{SPEED_MODIFIER/1000}"
 
+# ==== FUNCTIONS ====
 def update_field(field_current: list, field_buffer: list):
     """Updates cells on the field"""
     counter = 0
@@ -108,6 +99,7 @@ def put_cell(pos: tuple, matrix: list):
         else: matrix[row][col] = 0
 
 def GUI_pause(pause: bool):
+    """Displays GUI Pause indicator"""
     if pause:
         r = pg.Rect(0, 0, SQUARE_SIDE, SQUARE_SIDE)
         pg.draw.rect(screen, RED, r)
@@ -115,6 +107,14 @@ def GUI_pause(pause: bool):
         r = pg.Rect(0, 0, SQUARE_SIDE, SQUARE_SIDE)
         pg.draw.rect(screen, GREEN, r)
 
+text_font = pg.font.SysFont("Arial", 15)
+def draw_text(text, font, color, x=W-(SQUARE_SIDE*3), y=0):
+    """Displays current simulation speed as text"""
+    img = font.render(text, True, color)
+    screen.blit(img, (x, y))
+
+
+# ==== MAIN CODE ====
 pg.init()
 screen = pg.display.set_mode((W, H))
 field_clear = [[0 for _ in range(COLS+1)] for _ in range(ROWS+1)]
@@ -150,9 +150,15 @@ while True:
                 matrix_visualizer(field_current)
                 draw_grid()
                 pg.display.flip()
+            elif event.key == pg.K_q:
+                SPEED_MODIFIER *= 0.5
+                if (SPEED_MODIFIER < 125): SPEED_MODIFIER = 1000
+                SPEED_TEXT = f"Speed: x{SPEED_MODIFIER/1000}"
+                
 
     if pause:
         screen.fill(BLACK)
+        draw_text(SPEED_TEXT, text_font, WHITE)
         GUI_pause(pause)
         matrix_visualizer(field_current)
         draw_grid()
@@ -160,11 +166,11 @@ while True:
     else:
         update_field(field_current, field_buffer)
         screen.fill(BLACK)
+        draw_text(SPEED_TEXT, text_font, WHITE)
         GUI_pause(pause)
         field_current = copy.deepcopy(field_buffer)
         field_buffer = copy.deepcopy(field_clear)
         matrix_visualizer(field_current)
         draw_grid()
         pg.display.flip()
-
-    time.sleep(0.1)
+        pg.time.delay(int(SPEED_MODIFIER))
