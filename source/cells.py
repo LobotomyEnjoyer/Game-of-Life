@@ -37,9 +37,15 @@ GREEN = (0, 255, 0)
 BLACK = (0,0,0)
 WHITE = (255,255,255)
 
-SPEED_MODIFIER = 1000
+SPEED_MODIFIER = 125
 
 SPEED_TEXT = f"Speed: x{SPEED_MODIFIER/1000}"
+
+OFFSETS = (
+    (0,1), (0,-1),
+    (1,0), (1,1), (1, -1),
+    (-1,0), (-1,1), (-1, -1),
+           )
 
 # ==== FUNCTIONS ====
 def update_field(field_current: list, field_buffer: list):
@@ -47,14 +53,8 @@ def update_field(field_current: list, field_buffer: list):
     counter = 0
     for row in range(1, ROWS-1):
         for col in range(1, COLS-1):
-            if field_current[row-1][col]: counter += 1
-            if field_current[row+1][col]: counter += 1
-            if field_current[row][col-1]: counter += 1
-            if field_current[row][col+1]: counter += 1
-            if field_current[row-1][col-1]: counter += 1
-            if field_current[row-1][col+1]: counter += 1
-            if field_current[row+1][col-1]: counter += 1
-            if field_current[row+1][col+1]: counter += 1
+            for offset in OFFSETS:
+                if field_current[row + offset[0]][col + offset[1]]: counter += 1
 
             if field_current[row][col]:
                 if counter < 2: field_buffer[row][col] = 0
