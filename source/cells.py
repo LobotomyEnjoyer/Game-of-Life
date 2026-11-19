@@ -13,7 +13,7 @@ import copy
 # + Реализовать по-кадровую симуляцию по кнопке во время паузы
 # - Перевести комменты на английский по завершению
 # - Добавить элементы GUI:
-#   - Пауза
+#   + Пауза
 #   - Скорость симуляции
 
 # ==== CONTROLS ====
@@ -44,8 +44,11 @@ GREY = (32, 32, 32)
 ORANGE = (255, 150, 0)
 BLUE = (0, 150, 255)
 RED = (255, 0, 0)
+GREEN = (0, 255, 0)
 BLACK = (0,0,0)
 WHITE = (255,255,255)
+
+enumerate()
 
 # ==== ФУНКЦИИ ====
 
@@ -104,6 +107,14 @@ def put_cell(pos: tuple, matrix: list):
         if matrix[row][col] == 0: matrix[row][col] = 1
         else: matrix[row][col] = 0
 
+def GUI_pause(pause: bool):
+    if pause:
+        r = pg.Rect(0, 0, SQUARE_SIDE, SQUARE_SIDE)
+        pg.draw.rect(screen, RED, r)
+    else:
+        r = pg.Rect(0, 0, SQUARE_SIDE, SQUARE_SIDE)
+        pg.draw.rect(screen, GREEN, r)
+
 pg.init()
 screen = pg.display.set_mode((W, H))
 field_clear = [[0 for _ in range(COLS+1)] for _ in range(ROWS+1)]
@@ -111,6 +122,7 @@ field_current = [[0 for _ in range(COLS+1)] for _ in range(ROWS+1)]
 field_buffer = [[0 for _ in range(COLS+1)] for _ in range(ROWS+1)]
 
 pause = True
+GUI_pause(pause)
 
 while True:
     for event in pg.event.get():
@@ -127,7 +139,6 @@ while True:
             # pause handler
             if event.key == pg.K_SPACE: 
                 pause = False if pause else True
-                print("PAUSED" if pause else "UNPAUSED")
             # field cleaner  
             elif event.key == pg.K_r:
                 field_current = copy.deepcopy(field_clear)
@@ -142,12 +153,14 @@ while True:
 
     if pause:
         screen.fill(BLACK)
+        GUI_pause(pause)
         matrix_visualizer(field_current)
         draw_grid()
         pg.display.flip()
     else:
         update_field(field_current, field_buffer)
         screen.fill(BLACK)
+        GUI_pause(pause)
         field_current = copy.deepcopy(field_buffer)
         field_buffer = copy.deepcopy(field_clear)
         matrix_visualizer(field_current)
