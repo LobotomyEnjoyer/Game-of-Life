@@ -1,6 +1,5 @@
 import pygame as pg
 import sys
-import time
 import copy
 
 # ==== CONTROLS ====
